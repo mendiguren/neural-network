@@ -3,13 +3,11 @@
 import cPickle
 import gzip
 import os
-import sys
-import time
 import urllib
-from tqdm import *
 
 def load_mnist():
     
+
     filepath = './mnist.pkl.gz'
 
     # Download the MNIST dataset if it is not present
@@ -22,8 +20,9 @@ def load_mnist():
     # Load the dataset
     print '... loading data'
 
+    #We have to descompress it
     f = gzip.open(filepath, 'rb')
     train_set, valid_set, test_set = cPickle.load(f)
     f.close()
 
-    return train_set,valid_set,test_set
+    return (train_set, valid_set, test_set)
