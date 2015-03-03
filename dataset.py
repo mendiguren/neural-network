@@ -25,4 +25,4 @@ def load_mnist():
     train_set, valid_set, test_set = cPickle.load(f)
     f.close()
 
-    return (train_set, valid_set, test_set)
+    return train_set, valid_set, test_set
