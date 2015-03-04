@@ -31,9 +31,9 @@ class simpleNet:
 		for layer in self.layers:
 			input = layer.forward(input)
 			
-			print '--------------------------------------'
-			print layer
-			print input
 		return input
 
+	def backward(self, reward):
 
+		for layer in self.layers:
+			layer.backward(reward)
