@@ -7,23 +7,15 @@ class simpleNet:
 
 		self.layers = list()
 
+		#Create input layer
+		self.layers.append(inputLayer(architecture[0]))
+
 		#Create the fully conected layers based on the architecture
-		for layer_size in architecture:
-
-			if layer_size == architecture[0]:
-				#Create the first layers based on dataset size
-				self.layers.append(inputLayer(layer_size))
-				last_layer_size = layer_size
-
-			else:
-				self.layers.append(fullyConectedLayer(last_layer_size, layer_size))
-
-
-			#For next loop iteration
-			last_layer_size = layer_size
+		for i in range(len(architecture)-1):
+			self.layers.append(fullyConectedLayer(architecture[i], architecture[i+1]))
 
 		#Create the output layer
-		self.layers.append(outputLayer(last_layer_size))
+		self.layers.append(outputLayer(architecture[-1]))
 
 
 	def forward(self, input):
