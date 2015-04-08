@@ -142,7 +142,7 @@ class outputLayer:
 			return spiked[random_pick]
 
 		#If none of them spiked, pick a random number
-		return 5#numpy.random.randint(0, input.shape[0])
+		return numpy.random.randint(0, input.shape[0])
 
 	def backward(self, reward):
 		#Because this layers hasn't have any learnable parameter

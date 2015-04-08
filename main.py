@@ -3,53 +3,33 @@ import numpy
 
 import dataset
 from nets import simpleNet
+from ma import movingAverage
 
-# mnist = dataset.load_mnist()
+data = dataset.load_dictionary()[0:4]
+nn = simpleNet(architecture=numpy.array([15 , data.shape[0]]))
 
-# nn = simpleNet(architecture=numpy.array([784 ,100, 10]))
+success_rate = dict()
+for epoch in tqdm(range(40000)):
+	scored  = 0.0
+	for example in range(data.shape[0]):
 
-# for epoch in range(10):
-# 	success = numpy.zeros(shape=(mnist[0][0].shape[0],))
-# 	for example in tqdm(range(mnist[0][0].shape[0])):  #
-		
-# 		input = mnist[0][0][example,:]
-# 		target = mnist[0][1][example]
-		
-# 		output = nn.forward(input)
+		input = data[example][1]
+		target = data[example][0]
 
-# 		reward = -0.00001
-# 		if output == target:
-# 			reward = 0.0001
-# 			success[example] += 1
+		output = nn.forward(input)
 
-# 		nn.backward(reward)
+		if example not in success_rate:
+			success_rate[example] = movingAverage(100)
+		else:
+			success_rate[example].append(float(output == target))
 
-# 	print numpy.sum(success) / success.shape[0]
+		reward = -0.5 *  success_rate[example].mean 
+		if output == target:
+		 	reward = 1.0 * (1 - success_rate[example].mean)
+		 	scored += 1.0
 
+		#print output, target
+		nn.backward(reward)
 
-data = dataset.load_dictionary()
-nn = simpleNet(architecture=numpy.array([15 , 4]))
-
-for superepoch in range(100):
-	success = numpy.zeros(shape=(4,))
-	for epoch in range(100):
-		for example in range(4):
-
-			input = data[example][1].flatten()
-
-			#print input
-			target = example
-
-			output = nn.forward(input)
-
-
-			reward = -0.3 *  success[example] / epoch / 4
-			if output == target:
-				reward = 2.0 * (1 - success[example] / (epoch * 4) )
-				success[example] += 1.0
-
-			nn.backward(reward)
-
-			#print target, output , reward
-	print numpy.sum(success) /  100
-	#print nn.layers[1].excitatory
+	if epoch % 1000 == 0:
+		print scored / data.shape[0] 
