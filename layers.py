@@ -38,7 +38,7 @@ class fullyConectedLayer:
 		#Excitary weights goes from input to the output.
 		#Excitatory weights describes the probability that a neuron in this layer will fired
 		#given that an input neuron layered fired.
-		self.excitatory = numpy.random.uniform(0.0,1.0,size=(self.input_len, self.layer_len))
+		self.excitatory = numpy.random.uniform(4.0,5.0,size=(self.input_len, self.layer_len))
 
 		#Inhibitory weights connect neurons from within this layers.
 		#This inhibitory acts as a competition between neurons in the layer.
@@ -56,13 +56,13 @@ class fullyConectedLayer:
 
 		self.input = input
 		#We allow excitatory weights to be between 0 and 10
-		#we then substract 5.0 element wise, make it goes from -5.0 to 5.0
+		#we then substract 5.0 element wise, shifting the range from -5.0 to 5.0
 		#after that we apply a sigmoid function so it goes from ~0.0 to ~1.0
 		#this is then consider as the probabillity of firing, base on this
 		#We randomly make it fired.
 		#print 'self.excitatory' , self.excitatory
 		output_ex = numpy.dot(input, self.excitatory) - self.mid_weight
-		#print 'output_ex' , output_ex
+		# print 'output_ex' , output_ex
 
 		#Inhibitory weights makes neurons which large output inhibit other neurons.
 		#Making them less probable to spike
@@ -85,13 +85,11 @@ class fullyConectedLayer:
 		#Consider a neuron was active if the generated random number
 		#Is smaller than the input.
 		random = numpy.random.rand(self.layer_len)
-		#print 'random' , random
 
 		#This means if the input is close to 1, most of the time it will spiked
 		#Otherwise, is unprobable it will spike.
 		self.spiked = random < probabillity
 
-		#print 'self.spiked' ,self.spiked
 		return self.spiked
 
 	def backward(self, reward): #TODO update the inhibitory
@@ -104,9 +102,12 @@ class fullyConectedLayer:
 			#where all weights which connect to neuron which didn't fired are 0, otherwise the value in self.excitatory.
 			#We will update it proportionally to the difference to the max weight, this proportionality is set with the reward.
 			#If the reward is 1, our weights will get the self.max_weight in only one run, which is undesired.
-			#print 'before updating weights with positive reward', self.excitatory
+			# print 'before updating weights with positive reward \n', self.excitatory
 			self.excitatory =  self.excitatory + (self.max_weight - self.excitatory) * reward  * self.input[:, None] * self.spiked
-			#print 'after updating weights with postive reward', self.excitatory
+			self.excitatory =  self.excitatory + (self.min_weight + self.excitatory) * (-1 * reward)  * self.input[:, None] * (self.spiked == False)
+			# print 'after updating weights with postive reward \n', self.excitatory
+			# print 'with self.spiked = \n' , self.spiked
+
 
 
 			#When updating the inhibitory weight, we want neurons which succesfully inhibited other neurons to increase it weights,
@@ -119,6 +120,8 @@ class fullyConectedLayer:
 			#the difference to the mimun weight and to the reward
 			#print 'before updating weights with negative reward', self.excitatory
 			self.excitatory =  self.excitatory + (self.min_weight + self.excitatory) * reward * self.input[:, None]  * self.spiked
+			#self.excitatory =  self.excitatory + (self.max_weight - self.excitatory) * (-1 * reward)  * self.input[:, None] * (self.spiked == False)
+
 			#print 'after updating weights with negative reward', self.excitatory
 		return
 

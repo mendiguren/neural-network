@@ -17,3 +17,5 @@ class movingAverage:
 			del self.window[0]
 
 		return self.mean
+
+	

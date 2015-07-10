@@ -58,3 +58,13 @@ def load_dictionary():
                      (24,[0, 1, 0, 0, 1, 0 , 1, 0, 1 , 1, 0, 1 , 1, 0, 1 ]),
                      (25,[0, 0, 0, 1, 1, 0 , 1, 0, 1 , 0, 1, 1 , 0, 0, 0 ])]
     return dictionary
+
+def load_naive():
+    
+    dictionary = numpy.zeros(4, dtype='u1, (4,)u1')
+    dictionary[:] = [(0,[1, 0, 0, 0]),
+                     (1,[0, 1, 0, 0]),
+                     (2,[0, 0, 1, 0]),
+                     (3,[0, 0, 0, 1])]
+    return dictionary
+
